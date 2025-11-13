@@ -1,3 +1,4 @@
+*.pyc
 .ipynb_checkpoints/README-checkpoint.md
 challenges/challenge_two.ipynb
 challenges/challenge-one.ipynb

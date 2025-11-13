@@ -16,16 +16,34 @@ import matplotlib.pyplot as plt
     #(1) ASAIW:
     #generate gaussian, random noise array as eps
     #re-generate y = sin(pi*x)+eps
+    
+#STEP 2:
+#interpolate the points with a polinomial curve.
+#plot the results.
+
+    #(2) ASAIW:
+    #generate gaussian, random noise array as eps
+    #re-generate y = sin(pi*x)+eps
 
 n = 500  #number of points       (observations)
 dim = 1 #number of dimensions   (features)
 l = 0   #lower bound for x
 u = 100 #upper bound for x
+sigma = 0.1
+
 #X = np.array(np.random.uniform(l,u,n))
-X = np.linspace(-100,100)
-print(X) 
-y = np.sin(np.pi*X)
-print(y)  
+X = np.linspace(-1,1,n)
+
+
+eps = np.random.normal(0,sigma,n)
+
+
+
+y = (np.sin(np.pi*X)+eps)
+
+
+#print(X)
+#print(y)  
 
 plt.scatter(X,y)
 plt.show()
