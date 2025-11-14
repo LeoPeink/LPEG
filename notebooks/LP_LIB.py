@@ -29,7 +29,7 @@ def rescale(x,new_min,new_max,old_min=0,old_max=1):
     for i in range(len(x)):
         return (new_max - new_min)*(x[i] - old_min)/(old_max-old_min) + new_min
     
-def linDataGen(n,dim=1,lower=0,upper=1,w=None,sigma=0):
+def linDataGen(n,dim=1,lower=0,upper=1,w=None,q=0,sigma=0, truth=False):
     """
     Generates either clean or noisy, linearly-generated data.
     Formally returns y,X where y=wX + eps, where eps is gaussian noise.
@@ -46,6 +46,8 @@ def linDataGen(n,dim=1,lower=0,upper=1,w=None,sigma=0):
         Upper bound for the domain of the data points
     w : float array of dim dim
         Vector of weights of the linear model
+    q : float
+        intercept with y axis, (y = mx+q)
     sigma : float
         Standard deviation of the noise eps
     
@@ -55,6 +57,9 @@ def linDataGen(n,dim=1,lower=0,upper=1,w=None,sigma=0):
         Generated input data
     y : array
         Generated output data
+    (optional - if truth=True)
+    yt : array
+        Ground-truth data, un-noised model
     """
     if w is None:
         w = np.ones(dim)
@@ -63,9 +68,13 @@ def linDataGen(n,dim=1,lower=0,upper=1,w=None,sigma=0):
         X[i,:] = (np.random.uniform(lower,upper,dim))
     #X = np.random.rand(n,dim)
     eps = np.random.normal(0,sigma,n)
-    print(eps)
-    y = np.dot(X,w)+eps
-    return X,y
+    #print(eps)
+    y = np.dot(X,w)+q+eps
+    yt = np.dot(X,w)+q
+    if truth:
+        return X,y,yt
+    else:
+        return X,y
 """
 #DEMO linDataGen
 import numpy as np
@@ -272,3 +281,50 @@ data = zl.gCloudDataGen(n_points=500, sparcity=1, classes=3, labels=[1,1,1])
 myfun = zl.lineForRelableBidimensional(m,q)
 dataset[:,2] = zl.datasetRelable(myfun, dataset, mislabeling_prob=0.1)
 """
+
+
+def linearRegression(x_train, y_train):
+    """
+    Implements linear regression using the closed-form solution.
+    Parameters
+    ----------
+    x_train : array
+        Training input data
+    y_train : array
+        Training output data
+    
+    Returns
+        ----------
+    w : array
+        Estimated weights of the linear model
+    """
+    from numpy.linalg import inv
+    w = inv(x_train.T @ x_train) @ x_train.T @ y_train
+    return w
+
+
+def ridgeRegression(x_train, y_train, lam):
+    """
+    Implements ridge regression using the closed-form solution.
+    Parameters
+    ----------
+    x_train : array
+        Training input data
+    y_train : array
+        Training output data
+    lam : float
+        Hyperparameter
+    
+    Returns
+        ----------
+    w : array
+        Estimated weights of the linear model
+    """
+    import numpy as np
+    import numpy.linalg as la
+    from numpy.linalg import inv
+    
+    #d = np.shape(x_train)[1] #TODO sistema sta merda di dimensionalità
+    d=1 #WORKAROUND, TODO FIX ME!!!
+    w = (inv(x_train.T@x_train+lam*np.eye(d))@x_train.T)@y_train
+    return w
