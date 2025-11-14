@@ -165,3 +165,110 @@ ax.scatter(d[:,0], d[:,1], c=d[:,2])
 ax.set_title('Data')
 plt.show()
 '''
+
+def uniformDataGen(n_points, n_classes = 1, n_dimension = 2, limits = None, labels = None, labels_prob = None):
+    """
+    generate n_points uniformli distributed in the box delimitate by limits.
+    each point have a random class
+
+    Parameters
+
+    ----------
+    
+    n_points : int
+        Number of points per cloud
+    n_classes : int
+        Number of classes
+    n_dimension : int
+        How many dimension will have the dataset
+    limits : array[[int,int]]
+        upper and lower limit for each dimension of the dataset
+    labels : array
+        names of each classes
+    labels_prob = None
+        probability of each classes
+
+    Returns
+    
+    -------
+    
+    d : array of shape (n_points, n_dimension+1)
+        one point each row with lable in the last column
+    """
+    if limits is None:
+        limits = np.array([[-1,1]]*n_dimension)
+    if limits.shape != (n_dimension,2):
+        raise ValueError("limits must be of shape (n_dimension, 2)")
+    if labels is None or labels.shape[1] != n_classes:
+        labels = np.arange(n_classes)
+    if labels_prob is None:
+        labels_prob = np.array([1/n_classes]*n_classes)
+
+    dataset = np.empty((n_points, n_dimension+1))
+    dataset[:, :n_dimension] = (np.random.rand(n_points, n_dimension)-0.5)*abs(limits[:,0]-limits[:,1])+(limits[:,0]+limits[:,1])/2
+    dataset[:, n_dimension] = np.random.choice(labels, size=(1, n_points), p=labels_prob)
+    return dataset
+    
+    
+
+# just to remember data[:,2] = np.where( (data[:,0]*m+q-data[:,1]<0) ^ (np.random.rand(len(data[:,1]))<0.05), -1, 1 )
+
+def lineForRelableBidimensional(m, q):
+    """
+    Parameters
+
+    ----------
+
+    m : float
+        pendence of the line
+    q : float
+        quota of the line
+    
+    Returns
+    
+    -------
+    
+    line : function
+        A function that return a list of true/false. Will be used for classification in datasetRelable
+    
+    """
+
+    def line(data):
+        return data[:,0]*m+q-data[:,1]<0
+    return line
+
+def datasetRelable(function, dataset, label1 = 1, label2 = 0, mislabeling_prob = 0):
+    """
+    given a dataset and an appropriate function, return a numpy.array with the new lables
+    
+    Parameters
+
+    ----------
+    
+    function : function
+        a function that operate over a dataset and return a one-dimensional array of True/False
+    dataset : np.array()
+        the dataset that we'll use to generate the new labels
+    label1
+        label of points that makes the function true
+    label2
+        label of points that makes the function false
+    mislabeling_prob : int
+        probability of mislabeling
+    
+    Returns
+    
+    -------
+    
+    a one dimensional array with the new classification of the points
+
+    """
+    
+    return np.where( (function(dataset)) ^ (np.random.rand(len(dataset[:,0]))<mislabeling_prob), label1, label2 )
+
+""" DEMO
+
+data = zl.gCloudDataGen(n_points=500, sparcity=1, classes=3, labels=[1,1,1])
+myfun = zl.lineForRelableBidimensional(m,q)
+dataset[:,2] = zl.datasetRelable(myfun, dataset, mislabeling_prob=0.1)
+"""
