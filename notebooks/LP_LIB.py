@@ -58,7 +58,7 @@ def multiDimLinDataGen(n_points, n_dimension = 1, limits = None, coeficients = N
     # TODO rivedre questa parte, not happy
     return dataset
     
-def linDataGen(n,dim=1,lower=0,upper=1,w=None, q = 0, sigma=0, truth=False):
+def linDataGen(n,dim=1,lower=0,upper=1,w=None, q=0, sigma=0, truth=False):
     """
     Generates either clean or noisy, linearly-generated data.
     Formally returns y,X where y=wX + eps, where eps is gaussian noise.
@@ -91,7 +91,8 @@ def linDataGen(n,dim=1,lower=0,upper=1,w=None, q = 0, sigma=0, truth=False):
         Ground-truth data, un-noised model
     """
     if w is None:
-        w = np.ones((dim,1))
+        #w = np.ones((dim,1))
+        w = np.ones((dim))
     X = np.zeros((n,dim)) #creates "n" points, empty
     for i in range(n): #for each point
         X[i,:] = (np.random.uniform(lower,upper,dim))
@@ -100,8 +101,6 @@ def linDataGen(n,dim=1,lower=0,upper=1,w=None, q = 0, sigma=0, truth=False):
     #print(eps)
     y = X @ w + q + eps
     yt = X @ w + q
-    #y = np.dot(X,w)+q+eps
-    #yt = np.dot(X,w)+q
     if truth:
         return X,y,yt
     else:
