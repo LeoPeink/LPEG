@@ -91,14 +91,16 @@ def linDataGen(n,dim=1,lower=0,upper=1,w=None, q = 0, sigma=0, truth=False):
         Ground-truth data, un-noised model
     """
     if w is None:
-        w = np.ones(dim)
+        w = np.ones((dim,1))
     X = np.zeros((n,dim)) #creates "n" points, empty
     for i in range(n): #for each point
         X[i,:] = (np.random.uniform(lower,upper,dim))
     #X = np.random.rand(n,dim)
     eps = np.random.normal(0,sigma,n)
     #print(eps)
-    y = np.dot(X,w)+q+eps
+    y = X @ w + q + eps
+    yt = X @ w + q
+    #y = np.dot(X,w)+q+eps
     yt = np.dot(X,w)+q
     if truth:
         return X,y,yt
