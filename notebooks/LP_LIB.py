@@ -409,5 +409,76 @@ def squaredLoss(X,y,w):
     """
     return (np.linalg.norm((y-X@w),2)**2)/len(X)
 
-def gradientDescent():
-    return
+
+def squared_loss_gradient(X,y,w):
+    """
+    Calculates the gradient of the squared loss for linear model with weights w on data X with targets y.
+    Parameters
+    ----------
+    X : array
+        Input data
+    y : array
+        Output data
+    w : array
+        Weights of the linear model
+    Returns
+    -------
+    array
+        Gradient of the squared loss
+    """
+    return (2/len(X))*(X@w-y)@(X)
+
+def squared_loss_gradientDescent(X,y,w_0, alpha, t_max): #TODO implement proper tol
+    #if w_0 is None:
+    w = w_0
+    ws = []
+    for i in range(t_max):
+        s = -alpha*squared_loss_gradient(X,y,w)
+        w = w + s
+        ws.append(w)
+    return ws
+
+
+def gradientDescent(gradientFunction,X,y,w_0, alpha, t_max, tol=1e-15): #TODO implement proper tol
+    #if w_0 is None:
+    w = w_0
+    ws = []
+    for i in range(t_max):
+        s = -alpha*gradientFunction(X,y,w)
+        w = w + s
+        ws.append(w)
+        if(np.linalg.norm(s,2) < tol):
+            print("Converged in %d iterations" % i)
+            return ws
+    return ws
+
+
+def gradientDescent2(gradientFunction,X,y,w_0, alpha, t_max, tol=1e-15): #TODO implement proper tol
+    #if w_0 is None:
+   
+    #INITIALIZE ALL TO w_0
+    w = w_0
+    w_next = w_0
+    ws = [w_0]
+    t = 0
+    #while true
+    while t < t_max:
+        s = -alpha*gradientFunction(X,y,w)  #calculate stepsize
+        w_next = w + s                      #update weight
+        #print(np.linalg.norm((w_next-w),2))
+        t = t+1
+        err = squaredLoss(X,y,w_next)  #calculate error
+        w = w_next
+        ws.append(w)                        #(optional:add weight to array)
+        if(err < tol):
+            print("Converged in %d iterations" % t, "with error %.5f" % err)
+            return w
+    print("Max iterations reached")
+    return w
+    '''    
+    ws = []
+    while(ws[])
+    for i in range(t_max):
+        
+    return ws
+    '''

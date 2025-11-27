@@ -89,12 +89,12 @@ plt.ylabel('Mean Squared Error')
 plt.legend()
 plt.show()
 
-'''
+
 linerr = mean_squared_error(y_train, weight_lr@X_train)
 sqtest = lp.squaredLoss(X_train,y_train,weight_lr)
 print(sqtest)
 print(linerr)
-'''
+
 
 
 """
