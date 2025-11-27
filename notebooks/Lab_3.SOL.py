@@ -30,24 +30,24 @@ MLE_TR = []
 MLE_TE = []
 #generate data
 
-d = lp.linDataGen(n,dim,l,u,w,q,sigma)
+d = lp.multiDimLinDataGen(n_points= n, limits= [l ,u], n_dimension= dim)
 plt.figure()
 #3d plot of data
-X = d[0]
+x = d[0]
 y = d[1]
-#y_t = d[2]
+print(x)
+print(y)
+X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.5, random_state=global_seed)
 ax = plt.axes(projection='3d')
 ax.set_xlabel('X1')
 ax.set_ylabel('X2')
 ax.set_zlabel('y')
-ax.scatter(X[:, 0], X[:,1],y, c='red')
+ax.scatter(X_train[:,0], X_train[:,1], y_train, c='red')
 plt.title('Generated linear data with noise')
-plt.show() 
 #evaluate ridge regression for different values of lambda
 #split training and testing data
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, random_state=global_seed)
 
-
+"""
 #print(d)
 fig = plt.figure(0)
 #set scale
@@ -56,14 +56,14 @@ plt.ylim(min(y), max(y))
 #scatter test and training points in different colors
 plt.scatter(X_train,y_train, label = 'Training data')
 plt.scatter(X_test,y_test, label = 'Testing data')
-plt.plot(X,y_t, c='green', label='Ground truth',alpha=1)
+plt.plot(x,y_t, c='green', label='Ground truth',alpha=1)
 
 #implement linear regression in closed form
 
 #w = (XX^t)^-1 XY^t
 #w = inv(X.T @ X) @ X.T @ y
-w = lp.linearRegression(X,y)
-plt.plot(X, X * w, c='yellow', label='Linear regression')
+w = lp.linearRegression(x,y)
+plt.plot(x, x * w, c='yellow', label='Linear regression')
 #xp = np.linspace(l, u, 100)
 
 
@@ -109,7 +109,7 @@ plt.xlabel('Lambda index')
 plt.ylabel('Mean Squared Error')
 plt.legend()
 plt.show()
-
+"""
 '''
 legendFlag = True
 def mouse_event(event):
@@ -150,3 +150,7 @@ plt.show()
 
 
 '''
+# TODO gradient decent method con squared loss
+# TODO polynomial regression
+# TODO logistic regression
+# TODO logistic loss with sigmoid

@@ -35,7 +35,7 @@ def multiDimLinDataGen(n_points, n_dimension = 1, limits = None, coeficients = N
         upper and lower limit for each dimension of the dataset
 
     """
-    if hasattr(limits, "shape") & limits.shape[0] == 2:
+    if not hasattr(limits, "shape"):
         limits = np.array([limits]*n_dimension)
     if limits is None:
         limits = np.array([[-1,1]]*n_dimension)
