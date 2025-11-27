@@ -1,5 +1,5 @@
 import numpy as np
-
+import numpy.linalg as LA
 
 def rescale(x,new_min,new_max,old_min=0,old_max=1):
     """
@@ -391,3 +391,23 @@ def ridgeRegression(x_train, y_train, lam):
     return w
 
 
+def squaredLoss(X,y,w):
+    """
+    Calcualtes squared loss for linear model with weights w on data X with targets y.
+    Parameters
+    ----------
+    X : array
+        Input data
+    y : array
+        Output data
+    w : array
+        Weights of the linear model
+    Returns
+    -------
+    float
+        Squared loss value 
+    """
+    return (np.linalg.norm((y-X@w),2)**2)/len(X)
+
+def gradientDescent():
+    return
