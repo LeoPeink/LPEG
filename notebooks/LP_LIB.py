@@ -406,24 +406,24 @@ def squaredLoss(X,y,w):
     """
     return (np.linalg.norm((y-X@w),2)**2)/len(X)
 
-def squaredLossGradient(X,y,w):
+def squaredLossGradient(X : np.ndarray, y : np.ndarray, w : np.array):
     """
     Calculates the gradient of the squared loss for linear model with weights w on data X with targets y.
     Parameters
     ----------
-    X : array
+    X : np.array
         Input data
-    y : array
+    y : np.array
         Output data
-    w : array
+    w : array-like
         Weights of the linear model
     Returns
     -------
-    array
+    np.array
         Gradient of the squared loss
     """
     #TODO fix overflow
-    print((X@w-y))
+    #print((X@w-y))
     return (2/len(X))*(X@w-y)@(X)
 
 def polySquaredLoss(X, y, w):
@@ -487,11 +487,10 @@ def polySquaredLossGradient(X, y, w):
     gradient = (2/n) * X_powers.T @ residuals
     return gradient
 
-
 def gradientDescent(gradientFunction,lossFunction,X,y,w_0=None, alpha=0.1, t_max=1000, tol=1e-15, fixed_alpha=True):
     if w_0 is None:
         w_0 = np.ones(X.shape[1]) #if starting weights arent specified, generate 0s for every feature. #TODO fix
-        print(w_0)
+        
     w = w_0
     ws = []
     losses = []
@@ -512,7 +511,29 @@ def gradientDescent(gradientFunction,lossFunction,X,y,w_0=None, alpha=0.1, t_max
     print("Max iterations reached: %d" % t_max)
     return ws, losses
 
-
+def adaGraD(gradientFunction,lossFunction,X,y,w_0=None, alpha=0.1, t_max=1000, tol=1e-15, fixed_alpha=True):
+    if w_0 is None:
+        w_0 = np.ones(X.shape[1]) #if starting weights arent specified, generate 0s for every feature. #TODO fix
+    w = w_0
+    ws = []
+    regularization = np.zeros_like(w, dtype=np.float64)
+    losses = []
+    alpha = 1
+    for t in range(t_max):                  #stopper at t_max, maximum iteractions TODO fix
+        g = gradientFunction(X,y,w)      #evaluate stepsize using learning rate (alpha) and the given gradient function
+        regularization += g*g
+        s = -alpha*g/(np.sqrt(regularization + 0.1))
+        w = w + s                               #update model weights
+        ws.append(w.copy())                     #add to output (copy to avoid reference issues)
+        #print('weights at iteration ',t)
+        #print(w)
+        losses.append(lossFunction(X,y,w))        #add to output
+        #print(s)
+        if(np.linalg.norm(s,2) < tol):      #if stepsize is smaller than tol, stop
+            print("Converged in %d iterations at tol=%g" % (t, tol))
+            return ws, losses                       
+    print("Max iterations reached: %d" % t_max)
+    return ws, losses
 
 def polyDataGen(n,deg=1,lower=0,upper=1,w=None, q=0, sigma=0, truth=False):
     #NB: deg is the number of "dimensions" of the polynomial, every point has deg features.

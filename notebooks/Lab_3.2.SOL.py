@@ -7,14 +7,14 @@ from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
 
 
-n = 10
+n = 100
 dim = 2
 l = 0
 u = 1
 w = [3,2]
 #w = None
 q=2
-sigma = 0
+sigma = 0.5
 global_seed = 1
 np.random.seed(global_seed)
 
@@ -33,18 +33,15 @@ X = np.hstack((X, np.ones((X.shape[0],1))))    #add 1s to X so we learn b as wel
 #implement linear regression: find a hyperplane that best approximates the data.
 w_lr = lp.linearRegression(X,y) #two weights
 
-
-
-
 #w_0 = [-100,50]
-w_0 = None
+w_0 = [1,1,0]
 alpha = 0.1
 t_max = 2000
 tol = 1e-5
 
 print(f"Linear Regression - Coefficients: {w_lr[:-1]}, Intercept: {w_lr[-1]}")
 
-ws_lrgd, losses = lp.gradientDescent(lp.squaredLossGradient,lp.squaredLoss,X,y,w_0,alpha,t_max,tol,fixed_alpha=True)
+ws_lrgd, losses = lp.adaGraD(lp.squaredLossGradient,lp.squaredLoss,X,y,w_0,alpha,t_max,tol,fixed_alpha=True)
 
 print(f"Gradient Descent - Coefficients: {ws_lrgd[-1][:-1]}, Intercept: {ws_lrgd[-1][-1]}")
 
@@ -54,10 +51,11 @@ plt.plot(range(len(losses)), losses)
 plt.xlabel('Iterations')
 plt.ylabel('Squared Loss')
 plt.title('Squared Loss vs Iterations')
-plt.show()
+
 
 
 #plot the weights and the targets
+plt.figure()
 plt.plot(range(len(ws_lrgd)), ws_lrgd)
 plt.hlines(w_lr,0,len(ws_lrgd), colors='red', label='Linear Regression Weights')
 plt.xlabel('Iterations')
