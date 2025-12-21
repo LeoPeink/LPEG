@@ -172,7 +172,7 @@ def gaussian_clouds_data_generator(n,sparcity=1,n_classes=2,flip=0,labels=None,m
     n_classes : int, optional
         Number of Gaussian clouds (and corresponding labels). Default is 2.
     flip : float, optional
-        Percentage (0–100) of points whose labels will be randomly flipped. Default is 0.
+        Percentage (0-100) of points whose labels will be randomly flipped. Default is 0.
     labels : list of int, optional
         List of labels to assign to each cloud.  
         If None, defaults to `[-1, 1]` for n_classes=2, or `range(n_classes)` otherwise.
@@ -347,7 +347,7 @@ def dataset_relabler(sign_function, dataset, label1 = 1, label2 = 0, mislabeling
 
     ----------
     
-    function : function
+    sign_function : function
         a function that operate over a dataset and return a one-dimensional array of True/False
     dataset : np.array()
         the dataset that we'll use to generate the new labels

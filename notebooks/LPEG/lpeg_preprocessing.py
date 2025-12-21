@@ -30,7 +30,6 @@ def minmax_scaler(x, new_min, new_max):
     x = (new_max - new_min)*(x - old_min)/(old_max-old_min) + new_min
     return x
 
-
 def add_bias_term(X):
     """
     Adds a bias term (column of 1s) to the input data matrix X.
